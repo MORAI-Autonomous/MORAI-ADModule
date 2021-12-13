@@ -9,7 +9,7 @@ from control.control_input import ControlInput
 from config.config import Config
 
 
-class SelfDriving:
+class AutonomousDriving:
     def __init__(self):
         config = Config()
 
