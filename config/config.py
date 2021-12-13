@@ -4,8 +4,8 @@ import json
 import os
 import io
 import pandas as pd
-from localization.point import Point
-from perception.object_info import ObjectInfo
+from ..localization.point import Point
+from ..perception.object_info import ObjectInfo
 
 
 class Config(object):
