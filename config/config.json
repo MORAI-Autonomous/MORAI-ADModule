@@ -1,0 +1,36 @@
+{
+    "common": {
+        "sampling_rate": 30,
+        "vehicle_length": 2.8
+    },
+    "map": {
+        "name": "kcity",
+        "traffic_light_control": true,
+        "is_closed_path": true,
+        "local_path_size": 50
+    },
+    "planning": {
+        "velocity_profile": {
+            "max_velocity": 60.0,
+            "road_friction": 0.15,
+            "window_size": 100
+        },
+        "adaptive_cruise_control": {
+            "velocity_gain": 0.5,
+            "distance_gain": 1,
+            "time_gap": 0.8
+        }
+    },
+    "control": {
+        "pid": {
+            "p_gain": 0.1,
+            "i_gain": 0.0,
+            "d_gain": 0.05
+        },
+        "pure_pursuit": {
+            "lfd_gain": 0.65,
+            "min_lfd": 2,
+            "max_lfd": 30
+        }
+    }
+}
