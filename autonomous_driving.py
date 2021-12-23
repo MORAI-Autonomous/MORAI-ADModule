@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from perception.forward_object_detector import ForwardObjectDetector
-from localization.path_manager import PathManager
-from planning.adaptive_cruise_control import AdaptiveCruiseControl
-from control.pure_pursuit import PurePursuit
-from control.pid import Pid
-from control.control_input import ControlInput
-from config.config import Config
+from .perception.forward_object_detector import ForwardObjectDetector
+from .localization.path_manager import PathManager
+from .planning.adaptive_cruise_control import AdaptiveCruiseControl
+from .control.pure_pursuit import PurePursuit
+from .control.pid import Pid
+from .control.control_input import ControlInput
+from .config.config import Config
 
 
 class AutonomousDriving:
