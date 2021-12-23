@@ -39,3 +39,8 @@ class Config(object):
         self["map"]["traffic_light_list"] = traffic_light_list.apply(
             lambda traffic_light: ObjectInfo(**traffic_light.to_dict()), axis=1
         ).tolist()
+
+    def update_config(self, file_name):
+        with io.open(file_name, 'r', encoding='utf-8') as f:
+            config = json.load(f)
+        self.__dict__.update(config)
