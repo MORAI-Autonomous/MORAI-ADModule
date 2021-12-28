@@ -42,6 +42,9 @@ class AutonomousDriving:
 
         # 속도 제어를 위한 PID control
         acc_cmd = self.pid.get_output(target_velocity, vehicle_state.velocity)
+        # target velocity가 0이고, 일정 속도 이하일 경우 full brake를 하여 차량을 멈추도록 함.
+        if round(target_velocity) == 0 and vehicle_state.velocity < 2:
+            acc_cmd = -1
 
         # 경로 추종을 위한 pure pursuit control
         self.pure_pursuit.path = local_path
