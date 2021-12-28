@@ -25,7 +25,7 @@ class AutonomousDriving:
         )
         self.pid = Pid(sampling_time=1/float(config['common']['sampling_rate']), **config['control']['pid'])
         self.pure_pursuit = PurePursuit(
-            vehicle_length=config['common']['vehicle_length'], **config['control']['pure_pursuit']
+            wheelbase=config['common']['wheelbase'], **config['control']['pure_pursuit']
         )
 
     def execute(self, vehicle_state, dynamic_object_list, current_traffic_light):

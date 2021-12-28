@@ -40,7 +40,7 @@ class AdaptiveCruiseControl:
                     if relative_distance < min_relative_distance:
                         min_relative_distance = relative_distance
                         self.object_type = object_type
-                        self.object_distance = relative_distance
+                        self.object_distance = relative_distance - self.vehicle_length
                         self.object_velocity = object_info.velocity
 
     def get_target_velocity(self, ego_vel, target_vel):
@@ -62,7 +62,7 @@ class AdaptiveCruiseControl:
         velocity_error = ego_vel - self.object_velocity
 
         safe_distance = ego_vel*self.time_gap+default_space
-        distance_error = safe_distance - (self.object_distance - self.vehicle_length)
+        distance_error = safe_distance - self.object_distance
 
         acceleration = -(self.velocity_gain*velocity_error + self.distance_gain*distance_error)
         out_vel = min(ego_vel+acceleration, target_vel)
