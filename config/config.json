@@ -11,9 +11,9 @@
         "local_path_size": 50
     },
     "mgeo":{
-        "use_mgeo_path" : false,
+        "use_mgeo_path" : true,
         "start_node" : "ND000298",
-        "end_node" : "ND000245"
+        "end_node" : "ND000120"
     },
     "planning": {
         "velocity_profile": {

@@ -62,8 +62,6 @@ class PathManager:
         for i in range(len(self.path) - 10,len(self.path)):
             velocity_profile.append(0.)
 
-        print(velocity_profile)
-
         self.velocity_profile = velocity_profile
 
     def get_local_path(self, vehicle_state):
