@@ -8,14 +8,25 @@ from .control.pid import Pid
 from .control.control_input import ControlInput
 from .config.config import Config
 
+from .mgeo.calc_mgeo_path import mgeo_dijkstra_path
+
+
 
 class AutonomousDriving:
     def __init__(self):
         config = Config()
 
-        self.path_manager = PathManager(
-            config["map"]["path"], config["map"]["is_closed_path"], config["map"]["local_path_size"]
-        )
+        if config["mgeo"]["use_mgeo_path"]:
+            mgeo_path = mgeo_dijkstra_path(config["map"]["name"])
+            self.path = mgeo_path.calc_dijkstra_path(config["mgeo"]["start_node"], config["mgeo"]["end_node"])
+            self.path_manager = PathManager(
+                self.path, config["map"]["is_closed_path"], config["map"]["local_path_size"]
+            )
+        else:
+            self.path = config["map"]["path"]
+            self.path_manager = PathManager(
+                self.path , config["map"]["is_closed_path"], config["map"]["local_path_size"]
+            )
         self.path_manager.set_velocity_profile(**config['planning']['velocity_profile'])
 
         self.forward_object_detector = ForwardObjectDetector(config["map"]["traffic_light_list"])
@@ -39,13 +50,11 @@ class AutonomousDriving:
         # adaptive cruise control를 활용한 속도 계획
         self.adaptive_cruise_control.check_object(local_path, object_info_dic_list, current_traffic_light)
         target_velocity = self.adaptive_cruise_control.get_target_velocity(vehicle_state.velocity, planned_velocity)
-
         # 속도 제어를 위한 PID control
         acc_cmd = self.pid.get_output(target_velocity, vehicle_state.velocity)
         # target velocity가 0이고, 일정 속도 이하일 경우 full brake를 하여 차량을 멈추도록 함.
         if round(target_velocity) == 0 and vehicle_state.velocity < 2:
-            acc_cmd = -1
-
+            acc_cmd = -1.
         # 경로 추종을 위한 pure pursuit control
         self.pure_pursuit.path = local_path
         self.pure_pursuit.vehicle_state = vehicle_state

@@ -68,9 +68,9 @@ class AdaptiveCruiseControl:
         out_vel = min(ego_vel+acceleration, target_vel)
 
         if self.object_type == 0 and (distance_error > 0):
-            out_vel = out_vel - 5
+            out_vel = out_vel - 5.
 
         if self.object_distance < default_space:
-            out_vel = 0
+            out_vel = 0.
 
         return out_vel
