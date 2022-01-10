@@ -11,7 +11,7 @@
         "local_path_size": 50
     },
     "mgeo":{
-        "use_mgeo_path" : true,
+        "use_mgeo_path" : false,
         "start_node" : "ND000298",
         "end_node" : "ND000245"
     },
