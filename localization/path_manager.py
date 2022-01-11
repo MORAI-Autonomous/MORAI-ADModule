@@ -51,8 +51,6 @@ class PathManager:
 
             if target_velocity > max_velocity:
                 target_velocity = max_velocity
-            
-            # target_velocity = np.clip(np.sqrt(r*9.8*road_friction), 0, max_velocity)
 
             velocity_profile.append(target_velocity)
 
