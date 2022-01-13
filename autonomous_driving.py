@@ -16,9 +16,9 @@ class AutonomousDriving:
     def __init__(self):
         config = Config()
 
-        if config["mgeo"]["use_mgeo_path"]:
+        if config["map"]["use_mgeo_path"]:
             mgeo_path = mgeo_dijkstra_path(config["map"]["name"])
-            self.path = mgeo_path.calc_dijkstra_path(config["mgeo"]["start_node"], config["mgeo"]["end_node"])
+            self.path = mgeo_path.calc_dijkstra_path(config["map"]["mgeo"]["start_node"], config["map"]["mgeo"]["end_node"])
             self.path_manager = PathManager(
                 self.path, config["map"]["is_closed_path"], config["map"]["local_path_size"]
             )

@@ -7,13 +7,13 @@
     "map": {
         "name": "R_KR_PG_K-City",
         "traffic_light_control": true,
-        "is_closed_path": false,
-        "local_path_size": 50
-    },
-    "mgeo":{
+        "is_closed_path": true,
+        "local_path_size": 50,
         "use_mgeo_path" : false,
-        "start_node" : "ND000298",
-        "end_node" : "ND000120"
+        "mgeo":{
+            "start_node" : "ND000298",
+            "end_node" : "ND000120"
+        }
     },
     "planning": {
         "velocity_profile": {

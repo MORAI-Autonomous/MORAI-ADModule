@@ -31,21 +31,18 @@ class PathManager:
                 x_list.append(x)
                 y_list.append(y)
 
-            fp = np.polyfit(x_list, y_list, 2)
-            a = fp[0]
-            b = fp[1]
-            c = fp[2]
+            poly = np.polyfit(x_list, y_list, 2)
+            poly_d = np.polyder(poly)
+            poly_dd = np.polyder(poly_d)
 
-            f   = abs(a*self.path[i].x+b*self.path[i].x +c)
-            f_  = abs(2*a*self.path[i].x+b)
-            f__ = abs(2*a)
+            f_d = abs(np.polyval(poly_d, self.path[i].x))
+            f_dd = abs(np.polyval(poly_dd, self.path[i].x))
 
             # numerator = pow((1 + f_),3/2)
-            numerator = (1 + pow(f_,2))*sqrt(1+pow(f_,2))
-            denominator = f__
+            numerator = (1 + pow(f_d,2))*sqrt(1+pow(f_d,2))
+            denominator = f_dd
 
             r = (numerator/denominator)
-
 
             target_velocity = sqrt(r*9.8*road_friction)
 
