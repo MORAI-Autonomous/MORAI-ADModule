@@ -46,8 +46,16 @@ class PathManager:
         self.velocity_profile = velocity_profile
 
     def get_local_path(self, vehicle_state):
-        distance_list = [point.distance(vehicle_state.position) for point in self.path]
-        current_waypoint = np.argmin(distance_list)
+        # TODO: 최소값 구하는 로직 개선 필요.
+        min_distance=float('inf')
+        current_waypoint=0
+        for i, point in enumerate(self.path):
+            dx = point.x - vehicle_state.position.x
+            dy = point.y - vehicle_state.position.y
+            distance = dx*dx + dy*dy
+            if distance < min_distance:
+                min_distance = distance
+                current_waypoint = i
 
         if current_waypoint + self.local_path_size < len(self.path):
             local_path = self.path[current_waypoint:current_waypoint + self.local_path_size]
