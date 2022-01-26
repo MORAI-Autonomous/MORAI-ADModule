@@ -31,20 +31,31 @@ class PathManager:
                 x_list.append(x)
                 y_list.append(y)
 
-            poly = np.polyfit(x_list, y_list, 2)
-            poly_d = np.polyder(poly)
-            poly_dd = np.polyder(poly_d)
+            x_start  = x_list[0]
+            x_end    = x_list[-1]
+            x_mid    = x_list[len(x_list)/2]
 
-            f_d = abs(np.polyval(poly_d, self.path[i].x))
-            f_dd = abs(np.polyval(poly_dd, self.path[i].x))
+            y_start  = y_list[0]
+            y_end    = y_list[-1]
+            y_mid    = y_list[len(y_list)/2]
 
-            # numerator = pow((1 + f_),3/2)
-            numerator = (1 + pow(f_d,2))*sqrt(1+pow(f_d,2))
-            denominator = f_dd
+            dSt = np.array([x_start - x_mid, y_start - y_mid])
+            dEd = np.array([x_end - x_mid, y_end - y_mid])
 
-            r = (numerator/denominator)
+            Dcom = 2 * (dSt[0]*dEd[1] - dSt[1]*dEd[0])
 
-            target_velocity = sqrt(r*9.8*road_friction)
+            dSt2 = np.dot(dSt,dSt)
+            dEd2 = np.dot(dEd,dEd)
+
+            U1 = (dEd[1] * dSt2 - dSt[1] * dEd2)/Dcom
+            U2 = (dSt[0] * dEd2 - dEd[0] * dSt2)/Dcom
+
+            tmp_r = sqrt(pow(U1, 2)+ pow(U2, 2))
+
+            if np.isnan(tmp_r):
+                tmp_r = float('inf')
+
+            target_velocity = sqrt(tmp_r*9.8*road_friction)
 
             if target_velocity > max_velocity:
                 target_velocity = max_velocity
@@ -58,6 +69,8 @@ class PathManager:
             velocity_profile.append(0.)
 
         self.velocity_profile = velocity_profile
+
+        print('velocity_profile',velocity_profile)
 
     def get_local_path(self, vehicle_state):
         distance_list = [point.distance(vehicle_state.position) for point in self.path]
