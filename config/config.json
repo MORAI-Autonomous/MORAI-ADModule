@@ -5,16 +5,21 @@
         "wheelbase": 2.8
     },
     "map": {
-        "name": "kcity",
+        "name": "R_KR_PG_K-City",
         "traffic_light_control": true,
         "is_closed_path": true,
-        "local_path_size": 50
+        "local_path_size": 50,
+        "use_mgeo_path" : false,
+        "mgeo":{
+            "start_node" : "ND000298",
+            "end_node" : "ND000120"
+        }
     },
     "planning": {
         "velocity_profile": {
             "max_velocity": 60.0,
             "road_friction": 0.15,
-            "window_size": 100
+            "window_size": 25
         },
         "adaptive_cruise_control": {
             "velocity_gain": 0.5,
@@ -25,7 +30,7 @@
     "control": {
         "pid": {
             "p_gain": 0.075,
-            "i_gain": 0.0,
+            "i_gain": 0.0001,
             "d_gain": 0.025
         },
         "pure_pursuit": {

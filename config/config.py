@@ -32,7 +32,7 @@ class Config(object):
         self["map"]["path"] = path.apply(
             lambda point: Point(point["x"], point["y"]), axis=1
         ).tolist()
-
+        
         traffic_light_list = pd.read_csv(
             os.path.join(os.path.dirname(__file__), 'map', self["map"]["name"], 'traffic_light.csv')
         )

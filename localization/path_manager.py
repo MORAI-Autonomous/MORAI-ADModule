@@ -1,8 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 from .point import Point
 import numpy as np
+from math import sqrt,pi 
 
 
 class PathManager:
@@ -19,31 +20,57 @@ class PathManager:
         for i in range(0, window_size):
             velocity_profile.append(max_velocity)
 
+        target_velocity = max_velocity
+
         for i in range(window_size, len(self.path)-window_size):
             x_list = []
             y_list = []
             for window in range(-window_size, window_size):
                 x = self.path[i+window].x
                 y = self.path[i+window].y
-                x_list.append([-2*x, -2*y, 1])
-                y_list.append(-(x*x)-(y*y))
+                x_list.append(x)
+                y_list.append(y)
 
-            x_matrix = np.array(x_list)
-            y_matrix = np.array(y_list)
-            x_trans = x_matrix.T
+            x_start  = x_list[0]
+            x_end    = x_list[-1]
+            x_mid    = x_list[len(x_list)/2]
 
-            a_matrix = np.linalg.inv(x_trans.dot(x_matrix)).dot(x_trans).dot(y_matrix)
-            a = a_matrix[0]
-            b = a_matrix[1]
-            c = a_matrix[2]
-            r = np.sqrt(a*a+b*b-c)
-            target_velocity = np.clip(np.sqrt(r*9.8*road_friction), 0, max_velocity)
+            y_start  = y_list[0]
+            y_end    = y_list[-1]
+            y_mid    = y_list[len(y_list)/2]
+
+            dSt = np.array([x_start - x_mid, y_start - y_mid])
+            dEd = np.array([x_end - x_mid, y_end - y_mid])
+
+            Dcom = 2 * (dSt[0]*dEd[1] - dSt[1]*dEd[0])
+
+            dSt2 = np.dot(dSt,dSt)
+            dEd2 = np.dot(dEd,dEd)
+
+            U1 = (dEd[1] * dSt2 - dSt[1] * dEd2)/Dcom
+            U2 = (dSt[0] * dEd2 - dEd[0] * dSt2)/Dcom
+
+            tmp_r = sqrt(pow(U1, 2)+ pow(U2, 2))
+
+            if np.isnan(tmp_r):
+                tmp_r = float('inf')
+
+            target_velocity = sqrt(tmp_r*9.8*road_friction)
+
+            if target_velocity > max_velocity:
+                target_velocity = max_velocity
+
             velocity_profile.append(target_velocity)
 
-        for i in range(len(self.path)-window_size, len(self.path)):
-            velocity_profile.append(target_velocity)
+        for i in range(len(self.path)-window_size, len(self.path) - 10):
+            velocity_profile.append(max_velocity)
+
+        for i in range(len(self.path) - 10,len(self.path)):
+            velocity_profile.append(0.)
 
         self.velocity_profile = velocity_profile
+
+        print('velocity_profile',velocity_profile)
 
     def get_local_path(self, vehicle_state):
         # TODO: 최소값 구하는 로직 개선 필요.

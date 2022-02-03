@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import numpy as np
+
+
 class Pid:
     def __init__(self, p_gain, i_gain, d_gain, sampling_time):
         self.p_gain = p_gain

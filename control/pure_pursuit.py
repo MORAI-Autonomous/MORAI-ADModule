@@ -35,11 +35,12 @@ class PurePursuit(object):
         lfd = self.lfd_gain * self._vehicle_state.velocity
         lfd = np.clip(lfd, self.min_lfd, self.max_lfd)
 
-        steering_angle = 0
+        # print("lfd",lfd)
+
+        steering_angle = 0.
         for point in self._path:
             diff = point - self._vehicle_state.position
             rotated_diff = diff.rotate(-self.vehicle_state.yaw)
-
             if rotated_diff.x > 0:
                 dis = rotated_diff.distance()
                 if dis >= lfd:
