@@ -33,11 +33,11 @@ class PathManager:
 
             x_start  = x_list[0]
             x_end    = x_list[-1]
-            x_mid    = x_list[len(x_list)/2]
+            x_mid    = x_list[int(len(x_list)/2)]
 
             y_start  = y_list[0]
             y_end    = y_list[-1]
-            y_mid    = y_list[len(y_list)/2]
+            y_mid    = y_list[int(len(y_list)/2)]
 
             dSt = np.array([x_start - x_mid, y_start - y_mid])
             dEd = np.array([x_end - x_mid, y_end - y_mid])
