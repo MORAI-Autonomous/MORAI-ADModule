@@ -8,7 +8,7 @@ from .control.pid import Pid
 from .control.control_input import ControlInput
 from .config.config import Config
 
-from .mgeo.calc_mgeo_path import mgeo_dijkstra_path
+# from .mgeo.calc_mgeo_path import mgeo_dijkstra_path
 
 
 
@@ -16,17 +16,10 @@ class AutonomousDriving:
     def __init__(self):
         config = Config()
 
-        if config["map"]["use_mgeo_path"]:
-            mgeo_path = mgeo_dijkstra_path(config["map"]["name"])
-            self.path = mgeo_path.calc_dijkstra_path(config["map"]["mgeo"]["start_node"], config["map"]["mgeo"]["end_node"])
-            self.path_manager = PathManager(
-                self.path, config["map"]["is_closed_path"], config["map"]["local_path_size"]
-            )
-        else:
-            self.path = config["map"]["path"]
-            self.path_manager = PathManager(
-                self.path , config["map"]["is_closed_path"], config["map"]["local_path_size"]
-            )
+        self.path = config["map"]["path"]
+        self.path_manager = PathManager(
+            self.path , config["map"]["is_closed_path"], config["map"]["local_path_size"]
+        )
         self.path_manager.set_velocity_profile(**config['planning']['velocity_profile'])
 
         self.forward_object_detector = ForwardObjectDetector(config["map"]["traffic_light_list"])

@@ -1,11 +1,11 @@
 {
     "common": {
         "sampling_rate": 30,
-        "vehicle_length": 4,
-        "wheelbase": 2.8
+        "vehicle_length": 0.495,
+        "wheelbase": 0.3453
     },
     "map": {
-        "name": "R_KR_PG_K-City",
+        "name": "V_OUT_RoboCityMini01",
         "traffic_light_control": true,
         "is_closed_path": true,
         "local_path_size": 50,
@@ -34,9 +34,9 @@
             "d_gain": 0.025
         },
         "pure_pursuit": {
-            "lfd_gain": 0.65,
-            "min_lfd": 2,
-            "max_lfd": 30
+            "lfd_gain": 0.3,
+            "min_lfd": 1,
+            "max_lfd": 3
         }
     }
 }
