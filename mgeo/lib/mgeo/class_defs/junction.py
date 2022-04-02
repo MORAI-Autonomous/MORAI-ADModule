@@ -5,10 +5,6 @@ import os, sys
 current_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.normpath(os.path.join(current_path, '../')))
 
-from utils.logger import Logger
-
-import numpy as np 
-
 from collections import OrderedDict
 
 class Junction(object): # super method의 argument로 전달되려면 object를 상속해야함 (Python2에서)
@@ -19,14 +15,10 @@ class Junction(object): # super method의 argument로 전달되려면 object를 
 
 
     def add_jc_node(self, node):
-        if node in self.jc_nodes:
-            Logger.log_warning('Node passed (id={}) already exists in the current junction (id={})'.format(node.idx, self.idx))
-        else:
+        if node not in self.jc_nodes:
             self.jc_nodes.append(node)
 
-        if self in node.junctions:
-            Logger.log_warning('Current junction (id={}) alreay exists in the node (id={})'.format(self.idx, node.idx))
-        else:
+        if self not in node.junctions:
             node.junctions.append(self)
 
 

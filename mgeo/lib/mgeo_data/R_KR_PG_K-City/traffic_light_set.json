@@ -110,6 +110,7 @@
     "sub_type": [
       "red",
       "yellow",
+      "left",
       "straight"
     ],
     "dynamic": true,
@@ -894,6 +895,7 @@
     "sub_type": [
       "red",
       "yellow",
+      "left",
       "straight"
     ],
     "dynamic": true,

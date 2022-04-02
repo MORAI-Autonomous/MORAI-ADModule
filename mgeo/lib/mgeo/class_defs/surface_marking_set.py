@@ -5,10 +5,6 @@ import os, sys
 current_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.normpath(os.path.join(current_path, '../')))
 
-from utils.logger import Logger
-
-import numpy as np
-from class_defs.surface_marking import SurfaceMarking
 from class_defs.key_maker import KeyMaker
 
 
@@ -20,7 +16,7 @@ class SurfaceMarkingSet(object): # super method의 argument로 전달되려면 o
     def append_data(self, sm, create_new_key=False):
         if create_new_key:
             idx = self.key_maker.get_new()
-            for idx in self.data.keys():
+            while idx in self.data.keys():
                 idx = self.key_maker.get_new()
 
             sm.idx = idx

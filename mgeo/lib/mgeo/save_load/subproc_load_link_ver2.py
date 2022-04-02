@@ -39,6 +39,7 @@ def load_node_and_link(node_save_info_list, line_save_info_list, global_info):
             on_stop_line = None
         
         node = Node(idx)
+       
         node.point = np.array(point)
         node.node_type = node_type
         node.on_stop_line = on_stop_line
@@ -101,29 +102,99 @@ def load_node_and_link(node_save_info_list, line_save_info_list, global_info):
         link.set_from_node(from_node)
         link.set_to_node(to_node)
         link.set_width_related_values(force_width_start, width_start, force_width_end, width_end)
-        link.set_points(np.array(points))
+        
+        if type(points[0][0]) == str:
+            link.set_points(np.array([[float(x) for x in y] for y in points]))
+        else:
+            link.set_points(np.array(points))
+
+        # link.set_points(np.array(points))
         link.link_type = link_type
         link.enable_side_border = enable_side_border
 
 
-        # 버전 2.2 이상부터 max speed 정보를 담고 있다
-        if file_ver >= Version(2,2):
+        # 버전에 따라 체크할 필요가 없이 그냥 key 값의 유무로 체크한다. 
+        
+        # 버전 2.2에서 추가된 데이터
+        if 'max_speed' in save_info:
             link.set_max_speed_kph(save_info['max_speed'])
 
-        if file_ver >= Version(2,4):
-            link.road_id = save_info['road_id']
-            link.ego_lane = save_info['ego_lane']
-            link.lane_change_dir = save_info['lane_change_dir']
-            link.hov = save_info['hov']
 
-        if file_ver >= Version(2,6):
+        # 버전 2.4에서 추가된 데이터
+        if 'road_id' in save_info:
+            link.road_id = save_info['road_id']
+        
+        if 'ego_lane' in save_info:
+            link.ego_lane = save_info['ego_lane']
+        
+        if 'lane_change_dir' in save_info:
+            link.lane_change_dir = save_info['lane_change_dir']
+        
+        if 'hov' in save_info:
+            link.hov = save_info['hov']
+        
+
+        # 버전 2.6에서 추가된 데이터
+        if 'geometry' in save_info:
             link.geometry = save_info['geometry']
 
-        link.can_move_left_lane = save_info['can_move_left_lane'] if 'can_move_left_lane' in save_info else False
-        link.can_move_right_lane = save_info['can_move_right_lane'] if 'can_move_right_lane' in save_info else False
-        link.road_type = save_info['road_type'] if 'road_type' in save_info else None
-        link.related_signal = save_info['related_signal'] if 'related_signal' in save_info else None
-        link.its_link_id = save_info['its_link_id'] if 'its_link_id' in save_info else None
+
+        # 아래 데이터는 버전 트래킹 안 되어 있음
+        if 'can_move_left_lane' in save_info:
+            link.can_move_left_lane = save_info['can_move_left_lane']
+
+        if 'can_move_right_lane' in save_info:
+            link.can_move_right_lane = save_info['can_move_right_lane']
+
+        if 'road_type' in save_info:
+            link.road_type = save_info['road_type']
+
+        if 'related_signal' in save_info:
+            link.related_signal = save_info['related_signal']
+
+        if 'its_link_id' in save_info:
+            link.its_link_id = save_info['its_link_id']
+        
+        if 'lane_mark_left' in save_info:
+            link.lane_mark_left = save_info['lane_mark_left']
+        
+        if 'lane_mark_right' in save_info:
+            link.lane_mark_right = save_info['lane_mark_right']
+
+        if 'link_type_def' in save_info:
+            link.link_type_def = save_info['link_type_def']
+        
+        if 'oppTraffic' in save_info:
+            link.oppTraffic = save_info['oppTraffic']
+
+        if 'is_entrance' in save_info:
+            link.is_entrance = save_info['is_entrance']
+        
+        if 'is_exit' in save_info:
+            link.is_exit = save_info['is_exit']
+
+        if 'speed_unit' in save_info:
+            link.speed_unit = save_info['speed_unit']
+
+        if 'speed_start' in save_info:
+            link.speed_start = save_info['speed_start']
+        else:
+            link.speed_start = [] # 기본 값은 리스트로 되어있던데?? 
+        
+        if 'speed_end' in save_info:
+            link.speed_end = save_info['speed_end']
+        else:
+            link.speed_end = []  # 기본 값은 리스트로 되어있던데?? 
+
+        if 'speed_list' in save_info:
+            link.speed_list = save_info['speed_list']
+        else:
+            link.speed_list = dict()
+
+        if 'recommended_speed' in save_info:    
+            link.recommended_speed = save_info['recommended_speed']
+        else:
+            link.recommended_speed = 0
 
         link_set.append_line(link, create_new_key=False)
     
@@ -140,6 +211,9 @@ def load_node_and_link(node_save_info_list, line_save_info_list, global_info):
                 link.set_left_lane_change_dst_link(dst_link)
                 if link.link_type in ['1', '2', '3']:
                         link.can_move_left_lane = False
+                # tomtom 데이터에 NON_DRIVABLE_LANE, EMERGENCY_LANE...
+                elif link.link_type in ['DRIVABLE_LANE', 'NON_DRIVABLE_LANE', 'EMERGENCY_LANE']:
+                        pass
                 else:
                     link.can_move_left_lane = True
 
@@ -148,6 +222,9 @@ def load_node_and_link(node_save_info_list, line_save_info_list, global_info):
                 link.set_right_lane_change_dst_link(dst_link)
                 if link.link_type in ['1', '2', '3']:
                         link.can_move_right_lane = False
+                # tomtom 데이터에 NON_DRIVABLE_LANE, EMERGENCY_LANE...
+                elif link.link_type in ['DRIVABLE_LANE', 'NON_DRIVABLE_LANE', 'EMERGENCY_LANE']:
+                        pass
                 else:
                     link.can_move_right_lane = True
 

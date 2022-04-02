@@ -5,12 +5,11 @@ import os, sys
 current_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.normpath(os.path.join(current_path, '../')))
 
-from utils.logger import Logger
-
-import matplotlib.pyplot as plt
-import numpy as np 
+import utils.polygon_util as util
 from class_defs.base_plane import BasePlane
-import lib.common.polygon_util as util
+
+import numpy as np
+from collections import OrderedDict
 
 class SurfaceMarking(BasePlane):
     """
@@ -65,10 +64,8 @@ class SurfaceMarking(BasePlane):
         # 마지막 point를 제외하고 전달. 이 때 numpy.array를 기본 python list로 변경한다
         # vtk에서는 numpy array를 지원하지 않기 때문.
         
-        # 다각형일 경우 사각형으로 만드는 로직 추가(MS-60)
         points = util.minimum_bounding_rectangle(self.points)
 
-        # mesh_gen_vertices = self.points.tolist()[:-1]
         mesh_gen_vertices = points.tolist()
 
         
@@ -275,3 +272,45 @@ class SurfaceMarking(BasePlane):
                     obj.add_link_ref(link)
 
         return obj
+
+    def item_prop(self):
+        prop_data = OrderedDict()
+        prop_data['idx'] = {'type' : 'string', 'value' : self.idx}
+        prop_data['points'] = {'type' : 'list<list<float>>', 'value' : self.points.tolist()}
+        prop_data['type'] = {'type' : 'string', 'value' : self.type}
+        prop_data['sub_type'] = {'type' : 'string', 'value' : self.sub_type}
+        prop_data['type_code_def'] = {'type' : 'string', 'value' : self.type_code_def}
+        return prop_data
+
+    def find_link_list(self, link_set, center_point):
+        link_list = []
+        boundary = np.array([-10, 10])
+        boundary_x = center_point[0] + boundary
+        boundary_y = center_point[1] + boundary
+        for idx, link in link_set.items():
+            if link.is_out_of_xy_range(boundary_x, boundary_y):
+                continue
+            link_list.append(link)
+        return link_list
+
+    def calculate_centroid(self):
+        sx = sy= sz = sL = 0
+        for i in range(len(self.points)):
+            x0, y0, z0 = self.points[i - 1]     # in Python points[-1] is last element of points
+            x1, y1, z1 = self.points[i]
+            L = ((x1 - x0)**2 + (y1 - y0)**2 + (z1-z0)**2) ** 0.5
+            sx += (x0 + x1)/2 * L
+            sy += (y0 + y1)/2 * L
+            sz += (z0 + z1)/2 * L
+            sL += L
+            
+        centroid_x = sx / sL
+        centroid_y = sy / sL
+        centroid_z = sz / sL
+
+        # print('cent x = %f, cent y = %f, cent z = %f'%(centroid_x, centroid_y, centroid_z))
+
+        # TODO: 계산하는 공식 추가하기
+        return np.array([centroid_x, centroid_y, centroid_z])
+
+        

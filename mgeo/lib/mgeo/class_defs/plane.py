@@ -5,11 +5,6 @@ import os, sys
 current_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.normpath(os.path.join(current_path, '../')))
 
-from utils.logger import Logger
-
-import matplotlib.pyplot as plt
-import numpy as np 
-
 
 class Plane(object): # super method의 argument로 전달되려면 object를 상속해야함 (Python2에서)
     def __init__(self, idx):
@@ -75,9 +70,6 @@ class Plane(object): # super method의 argument로 전달되려면 object를 상
         self.line_connection.append({'line': link_line,
             'line_idx': link_line.idx,
             'reverse': link_reverse})
-        
-        Logger.log_debug('node={} -> line={} -> node={}, reverse={}'.format(
-            start_node.idx, link_line.idx, end_node.idx, link_reverse))
     
     def to_string(self):
         ret_str = '----- Plane id={:<5} -----\n'.format(self.idx)
@@ -130,7 +122,6 @@ class Plane(object): # super method의 argument로 전달되려면 object를 상
 
     def determine_bbox(self):
         if self.nodes == []:
-            Logger.log_error('No nodes to calculate!')
             return
 
         x_list = []

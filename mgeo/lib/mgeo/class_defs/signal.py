@@ -5,8 +5,6 @@ import os, sys
 current_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.normpath(os.path.join(current_path, '../')))
 
-from utils.logger import Logger
-
 from class_defs.base_point import BasePoint
 import numpy as np
 
@@ -29,13 +27,16 @@ class Signal(BasePoint):
         self.type = ''
         self.sub_type = ''
         self.dynamic = None
-        self.orientation = None
+        self.orientation = None # TODO(sglee): OpenDRIVE 일 때 MGeo 일 때 의미가 다름. OpenDRIVE 일 경우 출력하는 부분에서만 이슈이므로, MGEo에서만 의미하는 용도로 사용하도록 변경하거나 별도으 ㅣ필드 생성
         self.value = 0
         self.country = '' # 나라 이름, 필수 값은 아님
         self.z_offset = 0 # z offset from track level to bottom edge of the signal
         self.height = 0
         self.width = 0
         self.synced_signal_id = ''
+        self.type_def = ''
+        self.ref_crosswalk_id = '' # 연결되는 crosswalk id
+        self.heading = 0
 
 
     def set_size(self):
@@ -157,7 +158,10 @@ class Signal(BasePoint):
             'country': obj.country,
             'z_offset': obj.z_offset,
             'height': obj.height,
-            'width': obj.width
+            'width': obj.width,
+            'type_def': obj.type_def,
+            'ref_crosswalk_id':obj.ref_crosswalk_id,
+            'heading': obj.heading
         }
         return dict_data
 
@@ -179,8 +183,17 @@ class Signal(BasePoint):
         sign_subtype = dict_data['sub_type']
         dynamic = dict_data['dynamic']
         orientation = dict_data['orientation']
+        if 'type_def' in dict_data:
+            type_def = dict_data['type_def']
+        else:
+            type_def = ''
         
         country = dict_data['country']
+        
+        if dict_data.__contains__('ref_crosswalk_id'):
+            ref_crosswalk_id = dict_data['ref_crosswalk_id']
+        else:
+           ref_crosswalk_id = ''
 
         if dict_data['z_offset'] is None:
             z_offset = 0
@@ -197,13 +210,18 @@ class Signal(BasePoint):
         else:
             width = dict_data['width']
 
+        if 'heading' in dict_data.keys():
+            heading = dict_data['heading']
+        else:
+            heading = 0
+
         """STEP #2 인스턴스 생성"""
         # 필수 정보
         obj = Signal(idx)
         obj.point = np.array(point)
 
         # 연결된 객체 참조용 정보
-        obj.link_id_list = link_id_list
+        # obj.link_id_list = link_id_list
         obj.road_id = road_id
 
         # 기타 속성 정보
@@ -215,13 +233,19 @@ class Signal(BasePoint):
         obj.z_offset = z_offset
         obj.height = height
         obj.width = width
+        obj.heading = heading
+
+        obj.ref_crosswalk_id = ref_crosswalk_id
+        obj.type_def = type_def
 
         """STEP #3 인스턴스 메소드 호출해서 설정할 값들 설정하기"""
+        obj.link_id_list = []
         if link_set is not None:
             for link_id in link_id_list:
                 if link_id in link_set.lines.keys():
                     link = link_set.lines[link_id]
                     obj.add_link_ref(link)
+                    obj.link_id_list.append(link.idx)
 
         return obj
         
@@ -241,5 +265,105 @@ class Signal(BasePoint):
         prop_data['z_offset'] = {'type' : 'float', 'value' : self.z_offset}
         prop_data['width'] = {'type' : 'float', 'value' : self.width}
         prop_data['height'] = {'type' : 'float', 'value' : self.height}
+        prop_data['type_def'] = {'type' : 'string', 'value' : self.type_def}
+        prop_data['ref_crosswalk_id'] = {'type' : 'string', 'value' : self.ref_crosswalk_id}
+        prop_data['heading'] = {'type' : 'float', 'value' : self.heading}
 
         return prop_data
+    
+    def ToMgeo_210311(self):
+        
+        if self.type_def == 'ngii_model1':
+            if self.type == '1': 
+                self.type == 'warning_sign'
+            elif self.type == '2':
+                self.type = 'regulatory_sign'
+            elif self. type == '3':
+                self.type = 'regulatory_sign'
+            elif self. type == '4':
+                self.type = 'marker_sign'
+            elif self. type == '5': 
+                    # 코드값 502 : 횡형삼색등
+                if self.sub_type == '502' :
+                    self.type = 'car'
+                    self.sub_type = ['red', 'yellow', 'straight']
+                    self.orientation = 'horizontal'
+                    # 코드값 505 : 횡형사색등A
+                elif self.sub_type == '505' :
+                    self.type = 'car'
+                    self.sub_type = ['red', 'yellow', 'left', 'straight']
+                    self.orientation = 'horizontal'
+                    # 코드값 508 : 보행등
+                elif self.sub_type == '508' :
+                    self.type = 'pedestrian'
+                    self.sub_type = ['red', 'yellow', 'left']
+                    # 코드값 510 : 종형삼색등
+                elif self.sub_type == '510' :
+                    self.type = 'car'
+                    self.subtype = ['red', 'yellow', 'left', 'straight']
+                    self.orientation = 'vertical'
+        elif self.type_def == 'ngii_model2':
+            if self.type == '1': # 차량횡형-삼색등
+                self.type = 'car'
+                self.sub_type = ['red', 'yellow', 'straight']
+                self.orientation = 'horizontal'
+            elif self.type == '2': # 차량횡형-사색등A
+                self.type = 'car'
+                self.sub_type = ['red', 'yellow', 'left', 'straight']
+                self.orientation = 'horizontal'
+            elif self.type == '3': # 차량횡형-사색등B
+                self.type = 'car'
+                self.sub_type = ['red', 'yellow', 'straight']
+                self.orientation = 'horizontal'
+            elif self. type == '4': # 차량횡형-화살표삼색등
+                self.type = 'car'
+                self.sub_type = ['red', 'yellow', 'left']
+                self.orientation = 'vertical'
+            elif self.type == '5': # 차량종형-삼색등
+                self.type = 'car'
+                self.sub_type = ['red', 'yellow', 'straight']
+                self.orientation = 'vertical'
+            elif self.type == '6': # 차량종형-화살표삼색등
+                self.type = 'car'
+                self.sub_type = ['red', 'yellow', 'left']
+                self.orientation = 'vertical'
+            elif self.type == '7': # 차량종형-사색등
+                self.type = 'car'
+                self.sub_type = ['red', 'yellow', 'left', 'straight']
+            elif self.type == '8': # 버스삼색등
+                self.type = 'bus'
+                self.sub_type = ['red', 'yellow', 'straight']
+            elif self.type == '9': # 가변형 가변등
+                self.type = 'car'
+                self.sub_type = ['red', 'yellow', 'straight']
+            elif self.type == '10': # 경보형 가변등
+                self.type = 'car'
+                self.sub_type = ['red', 'yellow', 'straight']
+            elif self.type == '11': # 보행등
+                self.type = 'pedestrian'
+                self.sub_type = None
+            elif self.type == '99': # 정의되지 않은 신호등
+                self.type = 'etc'
+                self.sub_type = None
+            else:
+                print('[ERROR] ToMgeo_210311 | unexpected prop_type! (you passed = {} (tl id = {}))'.format(self.type, self.idx))
+
+        
+        self.type_def = 'mgeo'
+        
+    def IsPedestrianSign(self):
+        if self.type_def == 'mgeo' and self.type == 'pedestrian':
+            return True
+        elif self.type_def == 'ngii_model2' and self.type == '11':
+            return True
+        elif self.type_def == 'ngii_model1' and self.type == '5' and self.sub_type == '508':
+            return True
+        else:
+            return False
+                
+    def remove_ref_crosswalk_id(self, id):
+        if self.ref_crosswalk_id == id:
+            self.ref_crosswalk_id = ''
+                
+
+    

@@ -5,17 +5,13 @@ import os, sys
 current_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.normpath(os.path.join(current_path, '../')))
 
-from utils.logger import Logger
-
-import numpy as np
-from class_defs.junction import Junction
 from class_defs.key_maker import KeyMaker
 
 
 class JunctionSet(object): # super method의 argument로 전달되려면 object를 상속해야함 (Python2에서)
     def __init__(self):
         self.junctions = dict()
-        self.key_maker = KeyMaker('JC')
+        self.key_maker = KeyMaker(prefix='1')
 
     def append_junction(self, junction, create_new_key=False):
         if create_new_key:

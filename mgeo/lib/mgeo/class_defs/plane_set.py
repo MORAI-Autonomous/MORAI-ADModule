@@ -5,10 +5,6 @@ import os, sys
 current_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.normpath(os.path.join(current_path, '../')))
 
-from utils.logger import Logger
-
-import matplotlib.pyplot as plt
-import numpy as np 
 from .plane import Plane
 
 

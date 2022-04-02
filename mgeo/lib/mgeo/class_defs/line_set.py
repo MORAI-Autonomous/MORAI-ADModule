@@ -5,13 +5,9 @@ import os, sys
 current_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.normpath(os.path.join(current_path, '../')))
 
-from utils.logger import Logger
-
-import matplotlib.pyplot as plt
 import numpy as np 
 from class_defs.node_set import NodeSet
 from class_defs.node import Node
-from class_defs.line import Line
 from class_defs.key_maker import KeyMaker
        
 
@@ -31,10 +27,9 @@ class LineSet(object): # super method의 argument로 전달되려면 object를 �
         self.lines[line_obj.idx] = line_obj
     
     def remove_line(self, line_obj):
-        if line_obj.idx not in self.lines.keys():
-            Logger.log_error('line_obj.idx={} not in self.lines.keys()'.format(line_obj.idx))
-        # remove using key
-        self.lines.pop(line_obj.idx)
+        if line_obj.idx in self.lines.keys():
+            # remove using key
+            self.lines.pop(line_obj.idx)
 
     def draw_plot(self, axes):
         for idx,  line in self.lines.items():
@@ -108,7 +103,6 @@ class LineSet(object): # super method의 argument로 전달되려면 object를 �
                             # 여기서는 end로 기대되는게 일반적임
                             pts['line_ref'].set_to_node(new_node)
                         else: # start
-                            Logger.log_warning('two links are met in the starting point')
                             pts['line_ref'].set_from_node(new_node)
 
 
@@ -141,7 +135,6 @@ class LineSet(object): # super method의 argument로 전달되려면 object를 �
                             # 여기서는 start로 기대되는게 일반적임
                             pts['line_ref'].set_from_node(new_node)
                         else: # end 이면, end point에서 만난 것임
-                            Logger.log_warning('two links are met in the end point')
                             pts['line_ref'].set_to_node(new_node)
                             
         return node_set

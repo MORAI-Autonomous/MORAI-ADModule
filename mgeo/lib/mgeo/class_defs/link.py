@@ -5,13 +5,12 @@ import os, sys
 current_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.normpath(os.path.join(current_path, '../')))
 
-from utils.logger import Logger
-
 from class_defs.line import Line
 import numpy as np 
 
 from collections import OrderedDict
 
+# Link Class
 class Link(Line):
     '''
     내부의 points 필드를 처음부터 초기화하지 않고 나중에 만들 수 있는 클래스이다.
@@ -57,10 +56,18 @@ class Link(Line):
         self.lane_change_pair_list = list()
 
         # 최대 속도 및 최저 속도
-        self.max_speed_kph = 0
-        self.min_speed_kph = 0
+        self.max_speed = 0
+        self.min_speed = 0
+        self.speed_unit = ''
+        self.speed_start = []
+        self.speed_end = []
+        
+        # TomTom 데이터 속도(list) 추가
+        self.recommended_speed = None
+        self.speed_list = None
 
         self.link_type = link_type
+        self.link_type_def = ''
         self.road_type = road_type
 
         # 해당 링크에 연결된 object들
@@ -79,7 +86,12 @@ class Link(Line):
         self.its_link_id = None
         self.can_move_left_lane = False
         self.can_move_right_lane = False
-        self.road_type = None
+        # self.road_type = None
+
+        # tomtom 데이터 - 21.04.03
+        # 국토부 데이터 구조 때문에 link가 여러 개의 lane marking을 참조하도록 수정 - 21.06.08
+        self.lane_mark_left = []
+        self.lane_mark_right = []
      
         # OpenDRIVE 생성 관련 >> width 강제 설정
         fw, ws, fe, we = self.get_default_width_related_values()
@@ -93,11 +105,15 @@ class Link(Line):
         # self.width_start = -1 # -1 이면 b.c.에 따라 자동 설정된다
         # self.width_end = -1 # -1 이면 b.c.에 따라 자동 설정된다
 
+        # [210512] tomtom geoJSON 데이터 추가 속성 추출
+        self.oppTraffic = False
+        self.is_entrance = False
+        self.is_exit = False
+
         # OpenDRIVE 생성 관련 >> ref line 찾을 때 사용
         # get_max_succeeding_links를 dynamic programming으로 풀기위한 변수
         self.reset_odr_conv_variables()
 
-        self.geometry = [{'id':0, 'method':'poly3'}]
 
     def set_points(self, points):
         super(Link, self).set_points(points)
@@ -116,23 +132,6 @@ class Link(Line):
     def get_surface_markings(self):
         return self.surface_markings
     
-    def add_geometry(self, point_id, method):
-        if point_id == len(self.points) - 1:
-            raise BaseException('adding geometry point in the last point is not supported.')
-
-        # 만약 현재 point_id 가 이미 있으면 현재 입력된 method로 변경하고 리턴한다
-        for geo_point in self.geometry:
-            if geo_point['id'] == point_id:
-                geo_point['method'] = method
-                return
-
-        # 이 경우는 현재 전달된 point_id가 self.geometry 내부에 없는 경우가 된다.
-        # 이 point_id를 추가해주고, sort 해주면 된다.
-        self.geometry.append({'id':point_id, 'method':method})
-
-        # 추가할때마다 'id'를 기준으로 ascending-order로 sort해준다
-        self.geometry = sorted(self.geometry, key=lambda element: element['id'])
-
 
     ''' 차선 변경으로 진입 가능한 링크 설정 ''' 
     def set_left_lane_change_dst_link(self, link):
@@ -169,7 +168,6 @@ class Link(Line):
         else:
             return len(self.lane_change_pair_list)
 
-
     def get_all_left_links(self, check_road=True):
         """좌측 차선 변경으로 진입할 수 있는 모든 링크 리스트를 반환한다.
         check_road는 True이면, 현재 링크와 road가 같은 lane_ch_link_left 중에서 찾는다. (즉 road가 다른 link가 나타나면 중단)
@@ -196,8 +194,7 @@ class Link(Line):
             left_link = current_link.lane_ch_link_left
 
         return ret_list
-    
-    
+
     def get_all_right_links(self, check_road=True):
         """우측 차선 변경으로 진입할 수 있는 모든 링크 리스트를 반환한다.
         check_road는 True이면, 현재 링크와 road가 같은 lane_ch_link_right 중에서 찾는다. (즉 road가 다른 link가 나타나면 중단)
@@ -225,7 +222,6 @@ class Link(Line):
 
         return ret_list
 
-
     def is_in_the_left_or_right_side(self, another_link):
         """현재 링크가 another_link의 왼쪽 또는 오른쪽에 있는지 찾아준다. 왼쪽/오른쪽 어디에도 없으면 False, ''가 반환된다"""
         if self in another_link.get_all_left_links():
@@ -236,6 +232,46 @@ class Link(Line):
 
         else:
             return False, ''
+
+
+    """ 데이터 양 쪽 차선(lane_mark) 정보 관련 > id -> object로 """
+    def set_lane_mark_left(self, lane_mark):
+        if type(lane_mark).__name__ != 'LaneBoundary':
+            raise BaseException('[ERROR] unexpected link type: {}'.format(type(lane_mark)))
+
+        if type(self.lane_mark_left) is None or type(self.lane_mark_left) is str:
+            self.lane_mark_left = []
+
+        self.lane_mark_left.append(lane_mark)
+
+    def set_lane_mark_right(self, lane_mark):
+        if type(lane_mark).__name__ != 'LaneBoundary':
+            raise BaseException('[ERROR] unexpected link type: {}'.format(type(lane_mark)))
+
+        if type(self.lane_mark_right) is None or type(self.lane_mark_right) is str:
+            self.lane_mark_right = []
+
+        self.lane_mark_right.append(lane_mark)
+
+    def get_lane_mark_left(self):
+        return self.lane_mark_left
+
+    def get_lane_mark_right(self):
+        return self.lane_mark_right
+
+    def set_link_type(self, link_type, type_def=''):
+        self.link_type = link_type
+        self.link_type_def = type_def
+
+    def get_lane_marking_list_to_string(self, lane_boundary_list):
+        if lane_boundary_list is None:
+            return []
+        else:
+            lane_boundary_list_str = []
+            for lane_boundary in lane_boundary_list:
+                lane_boundary_list_str.append(lane_boundary.idx)
+            
+            return lane_boundary_list_str
 
 
     """ OpenDRIVE 변환 관련 """
@@ -249,7 +285,6 @@ class Link(Line):
         # 아래는 refernece line 찾는데 사용하는 알고리즘용 변수
         self.max_succeeding_link_solution_calculated = False
         self.max_succeeding_link_solution = (1, [self])
-
 
     def get_max_succeeding_links_within_the_same_road(self, road_id=None, preceding_links=None):
         """
@@ -308,8 +343,6 @@ class Link(Line):
 
         return self.max_succeeding_link_solution
 
-    """ OpenDRIVE 변환 관련 (끝)"""
-
 
     def set_values_for_lane_change_link(self, lane_change_path):
         '''
@@ -334,8 +367,8 @@ class Link(Line):
             return
 
         # NOTE : https://morai.atlassian.net/browse/MS-62
-        # self.set_from_node(from_node)
-        # self.set_to_node(to_node)
+        self.set_from_node(from_node)
+        self.set_to_node(to_node)
 
         # points 설정
         p1 = from_node.point
@@ -350,18 +383,30 @@ class Link(Line):
            lane_change_pair_list.append({'from': lane_change_path[i], 'to': lane_change_path[i+1]})
         self.set_lane_change_pair_list(lane_change_pair_list)
 
-    def set_max_speed_kph(self, max_speed_kph):
-        self.max_speed_kph = max_speed_kph
+    def set_max_speed_kph(self, max_speed):
+        self.max_speed = max_speed
 
-    def set_min_speed_kph(self, min_speed_kph):
-        self.min_speed_kph = min_speed_kph
+    def set_min_speed_kph(self, min_speed):
+        self.min_speed = min_speed
+
+    def set_recommended_speed_kph(self, recommended_speed):
+        self.recommended_speed = recommended_speed
+
+    def set_speed_unit(self, unit):
+        self.speed_unit = unit
+
+    def set_speed_region(self, start, end):
+        self.speed_start.append(start)
+        self.speed_end.append(end)
 
     def get_max_speed_kph(self):
-        return self.max_speed_kph
+        return self.max_speed
 
     def get_min_speed_kph(self):
-        return self.min_speed_kph
+        return self.min_speed
 
+    def get_recommended_speed_kph(self):
+        return self.recommended_speed
 
     def set_width(self, width):
         if width is None:
@@ -426,7 +471,7 @@ class Link(Line):
             lane_change_penalty = 0            
 
         self.cost = distance + lane_change_penalty
-          
+
     def draw_plot(self, axes):
 
         # 그려야하는 width와 color가 지정되어 있으면 해당 값으로만 그린다
@@ -467,8 +512,8 @@ class Link(Line):
         dst.lane_change_pair_list = src.lane_change_pair_list
         
         
-        dst.max_speed_kph = src.max_speed_kph
-        dst.min_speed_kph = src.min_speed_kph
+        dst.max_speed = src.max_speed
+        dst.min_speed = src.min_speed
         dst.link_type = src.link_type
         
         
@@ -476,6 +521,11 @@ class Link(Line):
         dst.ego_lane = src.ego_lane
         dst.lane_change_dir = src.lane_change_dir
         dst.hov = src.hov
+
+        dst.oppTraffic = src.oppTraffic
+        dst.is_entrance = src.is_entrance
+        dst.is_exit = src.is_exit
+
 
 
     def is_dangling_link(self):
@@ -523,6 +573,24 @@ class Link(Line):
             left_lane_change_dst_link_idx = None
             right_lane_change_dst_link_idx = None
 
+        # 양 옆에 차선 정보
+        lane_mark_left_idx_list = []
+        if self.get_lane_mark_left() is []:
+            pass
+        elif self.get_lane_mark_left() is None:
+            pass
+        else:
+            for lane_boundary in self.get_lane_mark_left():
+                lane_mark_left_idx_list.append(lane_boundary.idx)
+        
+        lane_mark_right_idx_list = []
+        if self.get_lane_mark_right() is []:
+            pass
+        elif self.get_lane_mark_right() is None:
+            pass
+        else:
+            for lane_boundary in self.get_lane_mark_right():
+                lane_mark_right_idx_list.append(lane_boundary.idx)
 
         # 차선 변경 링크인 경우, 차선 변경 Path 
         lane_ch_link_path = []
@@ -541,14 +609,16 @@ class Link(Line):
             'from_node_idx': self.from_node.idx if self.from_node else None,
             'to_node_idx': self.to_node.idx if self.to_node else None,
             'points': self.points.tolist(),
-            'max_speed': self.max_speed_kph,
+            # 'points': [['%0.20f'% x for x in y] for y in self.points],
+            'max_speed': self.max_speed,
             'lazy_init': self.lazy_point_init,
             'can_move_left_lane': self.can_move_left_lane,
             'can_move_right_lane': self.can_move_right_lane,
             'left_lane_change_dst_link_idx': left_lane_change_dst_link_idx,
-            'right_lane_change_dst_link_idx': right_lane_change_dst_link_idx, 
+            'right_lane_change_dst_link_idx': right_lane_change_dst_link_idx,
             'lane_ch_link_path': lane_ch_link_path,
             'link_type': self.link_type,
+            'link_type_def': self.link_type_def,
             'road_type': self.road_type,
             'road_id': self.road_id,
             'ego_lane': self.ego_lane,
@@ -561,8 +631,19 @@ class Link(Line):
             'width_start': self.width_start,
             'force_width_end': self.force_width_end,
             'width_end': self.width_end,
-            'enable_side_border': self.enable_side_border
+            'enable_side_border': self.enable_side_border,
+            'lane_mark_left': lane_mark_left_idx_list,
+            'lane_mark_right': lane_mark_right_idx_list,
+            'oppTraffic': self.oppTraffic,
+            'is_entrance': self.is_entrance,
+            'is_exit': self.is_exit,
+            'speed_unit': self.speed_unit,
+            'speed_start': self.speed_start,
+            'speed_end': self.speed_end,
+            'speed_list': self.speed_list,
+            'recommended_speed': self.recommended_speed
         }
+        
         return dict_data
 
 
@@ -570,7 +651,7 @@ class Link(Line):
     def from_dict(dict_data, link_set=None):
         pass
 
-        
+
     @classmethod
     def get_id_list_string(cls, list_obj):
         ret_str = '['
@@ -598,6 +679,7 @@ class Link(Line):
         prop_data['lane_ch_link_right'] = {'type' : 'string', 'value' : self.lane_ch_link_right.idx if self.lane_ch_link_right else None}
         prop_data['max_speed_kph'] = {'type' : 'int', 'value' : self.get_max_speed_kph()}
         prop_data['min_speed_kph'] = {'type' : 'int', 'value' : self.get_min_speed_kph()}
+        prop_data['link_type_def'] = {'type' : 'string', 'value' : self.link_type_def}
         prop_data['link_type'] = {'type' : 'string', 'value' : self.link_type}
         prop_data['road_type'] = {'type' : 'string', 'value' : self.road_type}
         prop_data['road_id'] = {'type' : 'string', 'value' : self.road_id}
@@ -611,4 +693,15 @@ class Link(Line):
         prop_data['force width (end)'] = {'type' : 'boolean', 'value' : self.force_width_end}
         prop_data['width_end'] = {'type' : 'float', 'value' : self.width_end}
         prop_data['side_border'] = {'type' : 'boolean', 'value' : self.enable_side_border}
+        prop_data['lane_mark_left'] = {'type' : 'list<string>', 'value' : self.get_lane_marking_list_to_string(self.lane_mark_left)}
+        prop_data['lane_mark_right'] = {'type' : 'list<string>', 'value' : self.get_lane_marking_list_to_string(self.lane_mark_right)}
+        prop_data['oppTraffic'] = {'type' : 'boolean', 'value' : self.oppTraffic}
+        prop_data['is_entrance'] = {'type' : 'boolean', 'value' : self.is_entrance}
+        prop_data['is_exit'] = {'type' : 'boolean', 'value' : self.is_exit}
+        prop_data['speed_unit'] = {'type' : 'string', 'value' : self.speed_unit}
+        prop_data['speed_start'] = {'type' : 'list<float>', 'value' : self.speed_start}
+        prop_data['speed_end'] = {'type' : 'list<float>', 'value' : self.speed_end}
+        prop_data['speed_list'] = {'type' : 'dict', 'value' : self.speed_list}
+        prop_data['recommended_speed'] = {'type' : 'int', 'value' : self.get_recommended_speed_kph()}
+
         return prop_data

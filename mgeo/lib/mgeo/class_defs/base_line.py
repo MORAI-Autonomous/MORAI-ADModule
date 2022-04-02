@@ -5,8 +5,6 @@ import os, sys
 current_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.normpath(os.path.join(current_path, '../')))
 
-from utils.logger import Logger
-
 import numpy as np
 import math
 
@@ -193,12 +191,13 @@ class BaseLine(object): # super method의 argument로 전달되려면 object를 
         self.set_points(np.vstack((self.points, points_to_add)))
 
 
-    def fill_in_points_evenly(self, step_len):
-        new_points = self.calculate_evenly_spaced_link_points(step_len)
+    def fill_in_points_evenly(self, step_len, keep_points=False):
+        if len(self.points) <= 1: return
+        new_points = self.calculate_evenly_spaced_link_points(step_len, keep_points)
         self.set_points(new_points)
     
 
-    def calculate_evenly_spaced_link_points(self, step_len):
+    def calculate_evenly_spaced_link_points(self, step_len, keep_points=False):
         '''
         현재의 링크를 일정한 간격으로 채워주는 점의 집합을 계산한다
         '''
@@ -232,6 +231,9 @@ class BaseLine(object): # super method의 argument로 전달되려면 object를 
                     #만일 이렇게 되면, 다음 포인트를 그냥 여기 포인트로 하는게 낫다
                     # 현재 point_now를 그 다음 point_now로 그대로 사용한다
                     skip_getting_new_point = True
+                    if keep_points:
+                        new_points_all = np.vstack((new_points_all, point_next))
+                        point_now = new_points_all[-1]
                     continue
                 else:
                     # 마지막인데, 진짜 마지막 포인트가 너무 짧은 거리에 있다

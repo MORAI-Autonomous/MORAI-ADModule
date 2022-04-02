@@ -1,5 +1,5 @@
 supported_class = {
-    'synced_signal' : False,
-    'intersection_controller' : False,
-    'mscenario' : False
+    'synced_signal' : True,
+    'intersection_controller' : True,
+    'mscenario' : True
 }

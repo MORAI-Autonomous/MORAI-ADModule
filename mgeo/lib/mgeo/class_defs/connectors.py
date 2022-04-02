@@ -5,8 +5,6 @@ import os, sys
 current_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.normpath(os.path.join(current_path, '../')))
 
-from utils.logger import Logger
-
 class ConnectingRoad(object): # super method의 argument로 전달되려면 object를 상속해야함 (Python2에서)
     def __init__(self, _idx=None):
         self.idx = _idx

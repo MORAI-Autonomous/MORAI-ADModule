@@ -5,11 +5,6 @@ import os, sys
 current_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.normpath(os.path.join(current_path, '../')))
 
-from utils.logger import Logger
-
-import matplotlib.pyplot as plt
-import numpy as np 
-from class_defs.signal import Signal
 from class_defs.key_maker import KeyMaker
 
 
@@ -21,7 +16,7 @@ class SignalSet(object): # super method의 argument로 전달되려면 object를
     def append_signal(self, signal_obj, create_new_key=False):
         if create_new_key:
             idx = self.key_maker.get_new()
-            for idx in self.signals.keys():
+            while idx in self.signals.keys():
                 idx = self.key_maker.get_new()
 
             signal_obj.idx = idx
@@ -51,3 +46,12 @@ class SignalSet(object): # super method의 argument로 전달되려면 object를
             if signal not in self.signals.keys():
                 self.signals[signal] = a_signals[signal]
         return self.signals
+    
+    def get_signal_contain_crosswalkid(self, cw_id):
+        tl_list = []
+        for idx, signal in self.signals.items():
+            if signal.ref_crosswalk_id == cw_id:
+                tl_list.append(idx)
+        
+        return tl_list
+        

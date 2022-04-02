@@ -5,16 +5,6 @@ import os, sys
 current_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.normpath(os.path.join(current_path, '../')))
 
-from utils.logger import Logger
-
-from class_defs.base_point import BasePoint
-from class_defs.signal import Signal
-from class_defs.signal_set import SignalSet
-from class_defs.synced_signal import SyncedSignal
-from class_defs.synced_signal_set import SyncedSignalSet
-
-import numpy as np
-
 from collections import OrderedDict
 
 
@@ -22,68 +12,94 @@ class IntersectionController(object): # super method의 argument로 전달되려
     def __init__(self, id=None):
         self.idx = id      
         self.point = None
-        self.synced_signal_id_list = []
-        self.synced_signal_set = SyncedSignalSet()
+        self.TL = list()
+        self.TL_dict = dict()
 
+    def new_synced_signal(self) :
+        synced_signal_list = list()
+        self.TL.append(synced_signal_list)
 
-    def get_synced_signal_set(self):
-        return synced_signal_set
+    def append_signal(self, signal) :
+        if len(self.TL) == 0 :
+            return
+        synced_signal_list = self.TL[-1]
+        synced_signal_list.append(signal.idx)
+        self.TL_dict[signal.idx] = signal
+        self.point = signal.point
 
+    def get_signal_id_list(self) :
+        id_list = []
+        for idxs in self.TL:
+            id_list.extend(idxs)
+        return id_list
+
+    def get_signal_list(self) :
+        return self.TL_dict.values()
 
     def get_intersection_controller_points(self):
-        points = []
-        for synced_signal_id in self.synced_signal_set.synced_signals:
-            points = points + self.synced_signal_set.synced_signals[synced_signal_id].get_synced_signal_points()
+        points = list()
+        for signal_id in self.TL_dict:
+            signal = self.TL_dict[signal_id]
+            points.append(signal.point)
         
         return points
-
 
     @staticmethod
     def to_dict(obj):
         """json 파일등으로 저장할 수 있는 dict 데이터로 변경한다"""
 
+        to_list = []
+        for i in obj.TL:
+            to_list.append(list(i))
         dict_data = {
             'idx': obj.idx,
-            'synced_signal_id_list': obj.synced_signal_id_list,          
-            'point': obj.point.tolist()
+            'TL': to_list
         }
 
         return dict_data
 
 
     @staticmethod
-    def from_dict(dict_data, synced_tl_set=None):
+    def from_dict(dict_data, light_set):
         """json 파일등으로부터 읽은 dict 데이터에서 IntersectionController 인스턴스를 생성한다"""
 
         """STEP #1 파일 내 정보 읽기"""
         # 필수 정보
         idx = dict_data['idx']
-        point = dict_data['point']
 
         # 연결된 객체 참조용 정보
-        synced_signal_id_list = dict_data['synced_signal_id_list']
+        signal_id_list = dict_data['TL']
         
         """STEP #2 인스턴스 생성"""
         # 필수 정보
         obj = IntersectionController(idx)
-        obj.point = np.array(point)
-
-        # 연결된 객체 참조용 정보
-        obj.synced_signal_id_list = synced_signal_id_list
+        obj.TL = signal_id_list
 
         """STEP #3 인스턴스 메소드 호출해서 설정할 값들 설정하기"""       
-        if synced_tl_set is not None:
-            for synced_signal_id in synced_signal_id_list:
-                if synced_signal_id in synced_tl_set.synced_signals.keys():
-                    synced_signal = synced_tl_set.synced_signals[synced_signal_id]
-                    obj.synced_signal_set.append_synced_signal(synced_signal)
+        if light_set is not None:
+            for synced_signal_list in signal_id_list:
+                for synced_signal_id in synced_signal_list :
+                    if synced_signal_id in light_set.signals :
+                        obj.TL_dict[synced_signal_id] = light_set.signals[synced_signal_id]
+
+        keys = list(obj.TL_dict.keys())
+        if len(keys) > 0 :
+            obj.point = obj.TL_dict[keys[0]].point
 
         return obj
 
     def item_prop(self):
         prop_data = OrderedDict()
         prop_data['idx'] = {'type' : 'string', 'value' : self.idx }
-        prop_data['point'] = {'type' : 'list<float>', 'value' : self.point.tolist()}
-        prop_data['synced_signal_id_list'] = {'type' : 'list<string>', 'value' : self.synced_signal_id_list}
+        prop_data['TL'] = {'type' : 'list<list<string>>', 'value' : self.TL}
 
         return prop_data
+
+
+    def is_out_of_xy_range(self, xlim, ylim):
+        """NOTE: XY 축에 대해서만 확인한다"""
+        return_bool = True
+        for signal_id in self.TL_dict:
+            return_bool = return_bool and self.TL_dict[signal_id].is_out_of_xy_range(xlim, ylim)
+        return return_bool
+

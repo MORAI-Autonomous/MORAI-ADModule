@@ -5,8 +5,6 @@ import os, sys
 current_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.normpath(os.path.join(current_path, '../')))
 
-from utils.logger import Logger
-
 import numpy as np
 
 class BasePlane(object): # super method의 argument로 전달되려면 object를 상속해야함 (Python2에서)
@@ -34,9 +32,9 @@ class BasePlane(object): # super method의 argument로 전달되려면 object를
         else:
             raise BaseException('[ERROR] @ BasePlane.set_points: _points must be an instance of numpy.ndarray of list. Type of your input = {}'.format(type(_points)))
         
-        x = _points[:,0]
-        y = _points[:,1]
-        z = _points[:,2]
+        x = self.points[:,0]
+        y = self.points[:,1]
+        z = self.points[:,2]
         self.set_bbox(x.min(), x.max(), y.min(), y.max(), z.min(), z.max())
 
 

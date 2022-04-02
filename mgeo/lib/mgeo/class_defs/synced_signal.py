@@ -5,12 +5,7 @@ import os, sys
 current_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.normpath(os.path.join(current_path, '../')))
 
-from utils.logger import Logger
-
-from class_defs.base_point import BasePoint
-from class_defs.signal import Signal
 from class_defs.signal_set import SignalSet
-from class_defs.key_maker import KeyMaker
 
 import numpy as np
 
@@ -45,7 +40,7 @@ class SyncedSignal(object): # super method의 argument로 전달되려면 object
         dict_data = {
             'idx': obj.idx,
             'link_id_list': obj.link_id_list,          
-            'point': obj.point.tolist(),
+            'point': np.array(obj.get_synced_signal_points()).tolist(),
             'intersection_controller_id': obj.intersection_controller_id,
             'signal_id_list': obj.signal_id_list,    
         }
@@ -88,7 +83,7 @@ class SyncedSignal(object): # super method의 argument로 전달되려면 object
     def item_prop(self):
         prop_data = OrderedDict()
         prop_data['idx'] = {'type' : 'string', 'value' : self.idx }
-        prop_data['point'] = {'type' : 'list<float>', 'value' : self.point.tolist()}
+        prop_data['point'] = {'type' : 'list<float>', 'value' : self.get_synced_signal_points()}
         prop_data['intersection_controller_id'] = {'type' : 'string', 'value' : self.intersection_controller_id}
         prop_data['signal_id_list'] = {'type' : 'list<string>', 'value' : self.signal_id_list}
 

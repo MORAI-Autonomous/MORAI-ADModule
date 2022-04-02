@@ -29,7 +29,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000001"
+    "ref_crosswalk_id": "CW000001",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010002",
@@ -61,7 +62,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000003"
+    "ref_crosswalk_id": "CW000003",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010003",
@@ -93,7 +95,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000001"
+    "ref_crosswalk_id": "CW000001",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010004",
@@ -125,7 +128,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000000"
+    "ref_crosswalk_id": "CW000000",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010005",
@@ -157,7 +161,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000002"
+    "ref_crosswalk_id": "CW000002",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010006",
@@ -189,7 +194,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000000"
+    "ref_crosswalk_id": "CW000000",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010007",
@@ -221,7 +227,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000004"
+    "ref_crosswalk_id": "CW000004",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010008",
@@ -253,7 +260,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000002"
+    "ref_crosswalk_id": "CW000002",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010011",
@@ -285,7 +293,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000016"
+    "ref_crosswalk_id": "CW000016",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010012",
@@ -317,7 +326,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000016"
+    "ref_crosswalk_id": "CW000016",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010013",
@@ -349,7 +359,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000016"
+    "ref_crosswalk_id": "CW000016",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010014",
@@ -381,7 +392,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000017"
+    "ref_crosswalk_id": "CW000017",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010015",
@@ -413,7 +425,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000017"
+    "ref_crosswalk_id": "CW000017",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010016",
@@ -445,7 +458,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000017"
+    "ref_crosswalk_id": "CW000017",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010017",
@@ -477,7 +491,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000019"
+    "ref_crosswalk_id": "CW000019",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010018",
@@ -509,7 +524,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000019"
+    "ref_crosswalk_id": "CW000019",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010019",
@@ -541,7 +557,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000019"
+    "ref_crosswalk_id": "CW000019",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010020",
@@ -573,7 +590,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000020"
+    "ref_crosswalk_id": "CW000020",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010021",
@@ -605,7 +623,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000020"
+    "ref_crosswalk_id": "CW000020",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010022",
@@ -637,7 +656,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000020"
+    "ref_crosswalk_id": "CW000020",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010023",
@@ -669,7 +689,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000018"
+    "ref_crosswalk_id": "CW000018",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010024",
@@ -701,7 +722,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000018"
+    "ref_crosswalk_id": "CW000018",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010025",
@@ -733,7 +755,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000018"
+    "ref_crosswalk_id": "CW000018",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010026",
@@ -765,7 +788,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000013"
+    "ref_crosswalk_id": "CW000013",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010027",
@@ -797,7 +821,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000013"
+    "ref_crosswalk_id": "CW000013",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010028",
@@ -829,7 +854,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000014"
+    "ref_crosswalk_id": "CW000014",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010029",
@@ -861,7 +887,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000014"
+    "ref_crosswalk_id": "CW000014",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010030",
@@ -893,7 +920,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000014"
+    "ref_crosswalk_id": "CW000014",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010031",
@@ -925,7 +953,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000015"
+    "ref_crosswalk_id": "CW000015",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010032",
@@ -957,7 +986,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000015"
+    "ref_crosswalk_id": "CW000015",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010033",
@@ -989,7 +1019,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000015"
+    "ref_crosswalk_id": "CW000015",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010034",
@@ -1021,7 +1052,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000024"
+    "ref_crosswalk_id": "CW000024",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010035",
@@ -1053,7 +1085,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000024"
+    "ref_crosswalk_id": "CW000024",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010036",
@@ -1085,7 +1118,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000024"
+    "ref_crosswalk_id": "CW000024",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010037",
@@ -1117,7 +1151,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000021"
+    "ref_crosswalk_id": "CW000021",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010038",
@@ -1149,7 +1184,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000021"
+    "ref_crosswalk_id": "CW000021",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010039",
@@ -1181,7 +1217,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000021"
+    "ref_crosswalk_id": "CW000021",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010044",
@@ -1213,7 +1250,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000022"
+    "ref_crosswalk_id": "CW000022",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010045",
@@ -1245,7 +1283,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000012"
+    "ref_crosswalk_id": "CW000012",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010046",
@@ -1277,7 +1316,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000012"
+    "ref_crosswalk_id": "CW000012",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010047",
@@ -1309,7 +1349,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000011"
+    "ref_crosswalk_id": "CW000011",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010048",
@@ -1341,7 +1382,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000011"
+    "ref_crosswalk_id": "CW000011",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010049",
@@ -1373,7 +1415,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000023"
+    "ref_crosswalk_id": "CW000023",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010050",
@@ -1405,7 +1448,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000023"
+    "ref_crosswalk_id": "CW000023",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010051",
@@ -1437,7 +1481,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000023"
+    "ref_crosswalk_id": "CW000023",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010052",
@@ -1469,7 +1514,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000010"
+    "ref_crosswalk_id": "CW000010",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010053",
@@ -1501,7 +1547,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000010"
+    "ref_crosswalk_id": "CW000010",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010054",
@@ -1533,7 +1580,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000006"
+    "ref_crosswalk_id": "CW000006",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010055",
@@ -1565,7 +1613,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000006"
+    "ref_crosswalk_id": "CW000006",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010056",
@@ -1597,7 +1646,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000009"
+    "ref_crosswalk_id": "CW000009",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010057",
@@ -1629,7 +1679,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000009"
+    "ref_crosswalk_id": "CW000009",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010058",
@@ -1661,7 +1712,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000005"
+    "ref_crosswalk_id": "CW000005",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010059",
@@ -1693,7 +1745,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000005"
+    "ref_crosswalk_id": "CW000005",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010060",
@@ -1725,7 +1778,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000007"
+    "ref_crosswalk_id": "CW000007",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010061",
@@ -1757,7 +1811,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000007"
+    "ref_crosswalk_id": "CW000007",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010062",
@@ -1789,7 +1844,8 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000008"
+    "ref_crosswalk_id": "CW000008",
+    "link_id_list": []
   },
   {
     "idx": "B319BS010063",
@@ -1821,6 +1877,7 @@
       ]
     ],
     "sign_type": "5",
-    "ref_crosswalk_id": "CW000008"
+    "ref_crosswalk_id": "CW000008",
+    "link_id_list": []
   }
 ]

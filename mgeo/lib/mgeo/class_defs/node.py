@@ -5,10 +5,6 @@ import os, sys
 current_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.normpath(os.path.join(current_path, '../')))
 
-from utils.logger import Logger
-
-import matplotlib.pyplot as plt
-import numpy as np 
 from class_defs.base_point import BasePoint
 
 from collections import OrderedDict
@@ -52,14 +48,10 @@ class Node(BasePoint):
                 
 
     def add_junction(self, junction):
-        if junction in self.junctions:
-            Logger.log_warning('Junction passed (id={}) already exists in the current node (id={})'.format(junction.idx, self.idx))
-        else:
+        if junction not in self.junctions:
             self.junctions.append(junction)
 
-        if self in junction.get_jc_nodes():
-            Logger.log_warning('Current node (id={}) already exists in the junction (id={})'.format(self.idx, junction.idx))
-        else:
+        if self not in junction.get_jc_nodes():
             junction.jc_nodes.append(self)
 
 
@@ -113,6 +105,7 @@ class Node(BasePoint):
             idx_list.append(link.idx)
         return idx_list
 
+
     def get_junctions_idx_list(self):
         
         if self.junctions is None:
@@ -126,7 +119,6 @@ class Node(BasePoint):
             raise BaseException('Unexpected node.junctions (expected: list, actual type: {})'.format(type(self.junctions)))
         
         return node_junc_id
-
 
 
     def get_from_nodes(self):
@@ -164,7 +156,7 @@ class Node(BasePoint):
                 to_links.append(link)
 
         if len(to_links) == 0:
-            raise BaseException('[ERROR] Error @ Dijkstra.find_shortest_path : Internal data error. There is no link from node (id={}) to node (id={})'.format(from_node.idx, to_node.idx))
+            raise BaseException('[ERROR] Error @ Dijkstra.find_shortest_path : Internal data error. There is no link from node (id={}) to node (id={})'.format(self.idx, to_node.idx))
 
         shortest_link = None
         min_cost = float('inf')
@@ -186,41 +178,23 @@ class Node(BasePoint):
             return False
         if len(self.from_links) != 0:
             return False
-
         return True
+
+
+    def is_end_node(self):
+        if (len(self.to_links) == 0
+            or len(self.from_links) == 0):
+            return True
+        return False
 
 
     def is_on_stop_line(self):
         # on_stop_line 정보가 없는 경우 (국토부 데이터 등..)
-        if on_stop_line is None :
-            return on_stop_line
+        if self.on_stop_line is None :
+            return self.on_stop_line
         # on_stop_line 정보가 있는 경우
         else :
-            return on_stop_line
-
-
-    def print_all_related_nodes_and_links(self):
-        Logger.log_debug('---------- For Node = {} ----------'.format(self.idx))
-        
-        Logger.log_debug('From Nodes')
-        for node in self.get_from_nodes():
-            Logger.log_debug('  Node {1} -> Node {0}'.format(self.idx, node.idx))
-        Logger.log_debug('----------')
-
-        Logger.log_debug('To Nodes')
-        for node in self.get_to_nodes():
-            Logger.log_debug('  Node {0} -> Node {1}'.format(self.idx, node.idx))
-        Logger.log_debug('----------')
-        
-        Logger.log_debug('From Links')
-        for link in self.get_from_links():
-            Logger.log_debug('  Link {1} -> Node {0}'.format(self.idx, link.idx))
-        Logger.log_debug('----------')
-
-        Logger.log_debug('To Links')        
-        for link in self.get_to_links():
-            Logger.log_debug('  Node {0} -> Link {1}'.format(self.idx, link.idx))
-        Logger.log_debug('--------------------')
+            return self.on_stop_line
 
 
     def draw_plot(self, axes):

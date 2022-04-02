@@ -5,9 +5,6 @@ import os, sys
 current_path = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.normpath(os.path.join(current_path, '../')))
 
-from utils.logger import Logger
-
-import matplotlib.pyplot as plt
 import numpy as np 
 from class_defs.base_line import BaseLine
 
@@ -29,6 +26,9 @@ class Line(BaseLine):
         # Visualization 모드
         self.set_vis_mode_all_different_color(False)
         self.reset_vis_mode_manual_appearance()
+
+        # Curve Fitting을 지원하기 위한 기능
+        self.geometry = [{'id':0, 'method':'poly3'}]
 
 
     def get_point_dict(self, point_idx):
@@ -57,9 +57,11 @@ class Line(BaseLine):
             'line_ref': self})
         return dict_obj 
     
+
     def get_last_idx(self):
         return self.points.shape[0] - 1
     
+
     def set_from_node(self, _from_node):
         # 기존의 from_node의 참조를 업데이트 (현재 링크 제거)
         if self.from_node is not None:
@@ -101,14 +103,18 @@ class Line(BaseLine):
     def get_from_node(self):
         return self.from_node 
 
+
     def get_to_node(self):
         return self.to_node
+
 
     def get_from_links(self):
         return self.from_node.get_from_links()
     
+
     def get_to_links(self):
         return self.to_node.get_to_links()
+
 
     def get_from_node_sharing_links(self):
         '''
@@ -122,6 +128,7 @@ class Line(BaseLine):
                 ret.append(each_link)
         return ret
 
+
     def get_to_node_sharing_links(self):
         '''
         특정 노드로 같이 들어가는 링크가 있을 수 있다.
@@ -134,11 +141,14 @@ class Line(BaseLine):
                 ret.append(each_link)
         return ret
 
+
     def is_source(self):
         return len(self.get_from_links()) == 0
 
+
     def is_sink(self):
         return len(self.get_to_links()) == 0
+
 
     def set_points_using_node(self, from_node, to_node, step_len):
         self.set_from_node(from_node)
@@ -160,14 +170,37 @@ class Line(BaseLine):
         points = np.vstack((points, p2))
         self.set_points(points)
 
+
     def get_included_planes(self):
         return self.included_plane
+
 
     def add_included_plane(self, plane):
         self.included_plane.append(plane)
 
+
     def remove_included_plane(self, plane_to_remove):
         self.included_plane.remove(plane_to_remove)
+
+
+    def add_geometry(self, point_id, method):
+        if point_id == len(self.points) - 1:
+            raise BaseException('adding geometry point in the last point is not supported.')
+
+        # 만약 현재 point_id 가 이미 있으면 현재 입력된 method로 변경하고 리턴한다
+        for geo_point in self.geometry:
+            if geo_point['id'] == point_id:
+                geo_point['method'] = method
+                return
+
+        # 이 경우는 현재 전달된 point_id가 self.geometry 내부에 없는 경우가 된다.
+        # 이 point_id를 추가해주고, sort 해주면 된다.
+        self.geometry.append({'id':point_id, 'method':method})
+
+        # 추가할때마다 'id'를 기준으로 ascending-order로 sort해준다
+        self.geometry = sorted(self.geometry, key=lambda element: element['id'])
+
+
 
     def draw_plot(self, axes):
         # 그려야하는 width와 color가 지정되어 있으면 해당 값으로만 그린다
@@ -202,6 +235,7 @@ class Line(BaseLine):
                     marker='o',
                     color='b')
 
+
     def erase_plot(self):
         if self.plotted_obj is not None:
             # list of matplotlib.lines.Line2D 이므로
@@ -210,25 +244,31 @@ class Line(BaseLine):
                 if obj.axes is not None:
                     obj.remove()
 
+
     def hide_plot(self):
         if self.plotted_obj is not None:
             for obj in self.plotted_obj:
                 obj.set_visible(False)
+
 
     def unhide_plot(self):
         if self.plotted_obj is not None:
             for obj in self.plotted_obj:
                 obj.set_visible(True)
 
+
     def set_vis_mode_all_different_color(self, on_off):
         self.vis_mode_all_different_color = on_off
+
 
     def get_vis_mode_all_different_color(self):
         return self.vis_mode_all_different_color
 
+
     def set_vis_mode_manual_appearance(self, width, color):
         self.vis_mode_line_width = width
         self.vis_mode_line_color = color
+
 
     def reset_vis_mode_manual_appearance(self):
         self.set_vis_mode_manual_appearance(None, None)
