@@ -20,7 +20,9 @@ Please checkout the network wrapper repository with [ROS](https://github.com/MOR
 ├── localization                    # [Localization] about localization the current vehicle position
 │    └── path_manager.py              # make local path which from the global path with Mgeo or defined trajectories
 ├── mgeo                            # [HD Map] about datas and process with HD map
-│    ├── lib                          # MGeo HD map loader repo
+│    ├── lib                          # directory about MGeo HD map data
+│    │    ├── mgeo                      # MGeo HD map loader repo (submodule)
+│    │    └── mgeo_data                 # directory about drivalble example map
 │    ├── calc_mgeo_path.py            # dijkstra path finder wrapper
 │    ├── e_dijkstra.py                # dijkstra algorithm
 │    ├── get_mgeo.py                  # MGeo loader wrapper
