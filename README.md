@@ -1,11 +1,8 @@
 # MORAI - AD Module
 
-AD (Autonomous Drive) Module is a vehicle control core module which plan the path and lateral / longitudinal control the vehicle.
+AD (Autonomous Driving) Module is a vehicle control module for planning paths and lateral / longitudinal control the vehicle.
 
-
-This repository cannot run alone.
-
-Please checkout the network wrapper repository with [ROS](https://github.com/MORAI-Autonomous/MORAI-DriveExample_ROS) or [UDP](https://github.com/MORAI-Autonomous/MORAI-DriveExample_UDP)
+This repository requires either [ROS](https://github.com/MORAI-Autonomous/MORAI-DriveExample_ROS) or [UDP](https://github.com/MORAI-Autonomous/MORAI-DriveExample_UDP) network wrapper.
 
 ```
 ./
@@ -39,9 +36,9 @@ Please checkout the network wrapper repository with [ROS](https://github.com/MOR
 
 ## More information
 
-If you not use our simulator yet, please visit [our homepage](https://www.morai.ai/) and check out the MORAI Simulator!
+Please visit [our homepage](https://www.morai.ai/) and check out the MORAI Simulator!
 
-Or if you use already, please check the [MORAI Sim manual (EN)](https://help-morai-sim-en.scrollhelp.site/) / [MORAI Sim manual (KR)](https://help-morai-sim.scrollhelp.site/).
+Also you can check our manual at [MORAI Sim manual (EN)](https://help-morai-sim-en.scrollhelp.site/) / [MORAI Sim manual (KR)](https://help-morai-sim.scrollhelp.site/).
 
 # License
 - AD Module license info:  [AD module License](./docs/License.md)
