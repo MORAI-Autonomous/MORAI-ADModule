@@ -7,7 +7,6 @@ from .control.pure_pursuit import PurePursuit
 from .control.pid import Pid
 from .control.control_input import ControlInput
 from .config.config import Config
-
 from .mgeo.calc_mgeo_path import mgeo_dijkstra_path
 
 
@@ -25,7 +24,7 @@ class AutonomousDriving:
         else:
             self.path = config["map"]["path"]
             self.path_manager = PathManager(
-                self.path , config["map"]["is_closed_path"], config["map"]["local_path_size"]
+                self.path, config["map"]["is_closed_path"], config["map"]["local_path_size"]
             )
         self.path_manager.set_velocity_profile(**config['planning']['velocity_profile'])
 

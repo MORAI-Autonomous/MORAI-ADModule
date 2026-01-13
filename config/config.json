@@ -5,7 +5,7 @@
         "wheelbase": 2.8
     },
     "map": {
-        "name": "R_KR_PG_K-City",
+        "name": "V_RHT_Suburb_03",
         "traffic_light_control": true,
         "is_closed_path": true,
         "local_path_size": 50,
